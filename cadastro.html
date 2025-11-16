@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - FreeFlow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style> body { background-color: #f7f9fb; } 
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center">
+
+    <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-2xl border border-gray-100">
+        <h2 class="text-3xl font-bold text-center text-indigo-600 mb-6">Criar Conta FreeFlow</h2>
+        
+        <form id="cadastroForm" class="space-y-6">
+            <div>
+                <label for="nome" class="block text-sm font-medium text-gray-700">Nome</label>
+                <input type="text" id="nome" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">E-mail</label>
+                <input type="email" id="email" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+            <div>
+                <label for="senha" class="block text-sm font-medium text-gray-700">Senha</label>
+                <input type="password" id="senha" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+
+            <p id="message" class="text-sm text-center hidden"></p>
+
+            <button type="submit" class="w-full flex justify-center py-2 px-4 rounded-lg shadow-sm text-sm font-medium text-white bg-green-500 hover:bg-green-600">
+                Criar Conta
+            </button>
+        </form>
+
+        <div class="mt-6 text-center">
+            <p class="mt-4 text-sm text-gray-500">
+                Já tem conta? <a href="login.html" class="font-medium text-indigo-600 hover:text-indigo-500">Faça login.</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('cadastroForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+            const messageElement = document.getElementById('message');
+            
+            messageElement.classList.add('hidden'); 
+
+            try {
+                const response = await fetch('http://localhost:3000/api/cadastro', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nome, email, senha })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    messageElement.textContent = result.message + " Redirecionando para o login...";
+                    messageElement.classList.remove('hidden');
+                    messageElement.classList.add('text-green-600');
+                    setTimeout(() => {
+                        window.location.href = 'login.html'; 
+                    }, 2000);
+                } else {
+                    messageElement.textContent = result.message || 'Erro ao tentar se cadastrar.';
+                    messageElement.classList.remove('hidden');
+                    messageElement.classList.add('text-red-600');
+                }
+
+            } catch (error) {
+                messageElement.textContent = 'Erro de conexão com o servidor. Tente novamente.';
+                messageElement.classList.remove('hidden');
+                messageElement.classList.add('text-red-600');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | FreeFlow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #f7f9fb; }
+        .sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex"> <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
+
+    <aside id="sidebar" class="sidebar fixed inset-y-0 left-0 w-64 bg-indigo-800 h-screen p-6 flex flex-col justify-between z-50 transform -translate-x-full lg:relative lg:translate-x-0 lg:shadow-md lg:flex-shrink-0">
+        <div>
+            <h1 class="text-3xl font-bold text-white mb-8">FreeFlow</h1>
+            <nav class="space-y-4">
+                <a href="#" class="block text-white font-medium hover:text-indigo-200 transition duration-150">
+                    Dashboard
+                </a>
+                <a href="#" class="block text-white font-medium hover:text-indigo-200 transition duration-150">
+                    Relatórios
+                </a>
+                <a href="#" class="block text-white font-medium hover:text-indigo-200 transition duration-150">
+                    Configurações
+                </a>
+            </nav>
+        </div>
+        <button id="logoutButton" class="w-full py-2 px-4 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition duration-150">
+            Sair
+        </button>
+    </aside>
+
+    <main class="flex-1 overflow-hidden">
+        
+        <header class="bg-white p-4 shadow-md sticky top-0 z-10 flex items-center justify-between lg:static lg:bg-transparent lg:shadow-none lg:p-10 lg:mb-10">
+            
+            <button id="menuToggle" class="text-gray-800 focus:outline-none mr-4 lg:hidden">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+
+            <h2 class="text-lg sm:text-xl lg:text-3xl font-semibold text-gray-800 flex-1 lg:flex-none">Visão Geral Mensal</h2>
+            
+            <button id="abrirModal" class="px-4 py-1 text-sm sm:px-6 sm:py-2 sm:text-base text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 transition duration-150 whitespace-nowrap lg:block hidden">
+                + Novo Lançamento
+            </button>
+            <button id="abrirModalMobile" class="px-3 py-1 text-sm text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 transition duration-150 whitespace-nowrap lg:hidden">
+                + Novo
+            </button>
+        </header>
+
+        <div class="p-4 sm:p-6 lg:p-10 lg:pt-0"> <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 lg:mb-10">
+                <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-indigo-500">
+                    <p class="text-sm font-medium text-gray-500">Receita Total (Mês)</p>
+                    <p id="kpiReceita" class="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">R$ 0,00</p>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-red-500">
+                    <p class="text-sm font-medium text-gray-500">Despesas Total (Mês)</p>
+                    <p id="kpiDespesa" class="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">R$ 0,00</p>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-green-500" id="kpiLiquidoContainer">
+                    <p class="text-sm font-medium text-gray-500">Receita Líquida (Mês)</p>
+                    <p id="kpiLiquido" class="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">R$ 0,00</p>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-yellow-500">
+                    <p class="text-sm font-medium text-gray-500">Pendente a Receber</p>
+                    <p id="kpiPendente" class="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">R$ 0,00</p>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg mb-6 lg:mb-10">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Receita Líquida - Últimos 6 Meses</h3>
+                <div class="flex items-end h-48 space-x-4 border-l border-b border-gray-300 pt-2 overflow-x-auto">
+                    <div class="flex flex-col items-center flex-shrink-0"><div class="w-8 lg:w-12 bg-indigo-500 rounded-t-lg" style="height: 30%;"></div><span class="text-xs text-gray-500 mt-1">Jun</span></div>
+                    <div class="flex flex-col items-center flex-shrink-0"><div class="w-8 lg:w-12 bg-indigo-500 rounded-t-lg" style="height: 60%;"></div><span class="text-xs text-gray-500 mt-1">Jul</span></div>
+                    <div class="flex flex-col items-center flex-shrink-0"><div class="w-8 lg:w-12 bg-indigo-500 rounded-t-lg" style="height: 85%;"></div><span class="text-xs text-gray-500 mt-1">Ago</span></div>
+                    <div class="flex flex-col items-center flex-shrink-0"><div class="w-8 lg:w-12 bg-indigo-600 rounded-t-lg" style="height: 100%;"></div><span class="text-xs text-gray-500 mt-1">Set</span></div>
+                    <div class="flex flex-col items-center flex-shrink-0"><div class="w-8 lg:w-12 bg-indigo-500 rounded-t-lg" style="height: 75%;"></div><span class="text-xs text-gray-500 mt-1">Out</span></div>
+                    <div class="flex flex-col items-center flex-shrink-0"><div class="w-8 lg:w-12 bg-indigo-600 rounded-t-lg" style="height: 90%;"></div><span class="text-xs font-bold text-gray-800 mt-1">Nov</span></div>
+                    <div class="w-10 flex-shrink-0"></div> 
+                </div>
+            </div>
+            
+            <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Últimos Lançamentos</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Tipo</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Descrição</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Valor</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Data</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lancamentosTabela" class="bg-white divide-y divide-gray-200">
+                            <tr><td colspan="5" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">Carregando lançamentos...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="registroModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white p-6 rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"> 
+            <h2 class="text-2xl font-bold mb-4">Registrar Lançamento</h2>
+            
+            <form id="registroForm" class="space-y-4">
+                <div>
+                    <label for="tipo" class="block text-sm font-medium text-gray-700 text-left">Tipo</label>
+                    <select id="tipo" required class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm">
+                        <option value="receita">Receita</option>
+                        <option value="despesa">Despesa</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="descricao" class="block text-sm font-medium text-gray-700 text-left">Descrição</label>
+                    <input type="text" id="descricao" required class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm">
+                </div>
+                
+                <div>
+                    <label for="valor" class="block text-sm font-medium text-gray-700 text-left">Valor</label>
+                    <input type="number" id="valor" step="0.01" required class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm">
+                </div>
+
+                <div>
+                    <label for="parceiro" class="block text-sm font-medium text-gray-700 text-left">Cliente / Fornecedor</label>
+                    <input type="text" id="parceiro" required class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm" placeholder="Ex: Nome da Empresa/Pessoa">
+                </div>
+                <div>
+                    <label for="data" class="block text-sm font-medium text-gray-700 text-left">Data (Vencimento/Despesa)</label>
+                    <input type="date" id="data" required class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm">
+                </div>
+
+                <div id="statusDiv">
+                    <label for="status" class="block text-sm font-medium text-gray-700 text-left">Status</label>
+                    <select id="status" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm">
+                        <option value="Pendente">Pendente</option>
+                        <option value="Pago">Pago</option>
+                    </select>
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" id="fecharModal" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-4 py-2 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">
+                        Salvar Lançamento
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000';
+        const registroModal = document.getElementById('registroModal');
+        const registroForm = document.getElementById('registroForm');
+        const tipoSelect = document.getElementById('tipo');
+        const statusDiv = document.getElementById('statusDiv');
+        const parceiroInput = document.getElementById('parceiro');
+        const lancamentosTabela = document.getElementById('lancamentosTabela');
+        const token = localStorage.getItem('freeflow_token'); 
+
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+        // Usaremos o ID abrirModal para ambos, mas o desktop usa o botão maior.
+        const abrirModalBtn = document.getElementById('abrirModal'); 
+        const abrirModalMobileBtn = document.getElementById('abrirModalMobile'); 
+        const fecharModalBtn = document.getElementById('fecharModal');
+
+        // ====================================================
+        // 1. VERIFICAÇÃO DE AUTENTICAÇÃO (PROTEGE O DASHBOARD)
+        // ====================================================
+        if (!token) {
+            alert("Sua sessão expirou. Por favor, faça login.");
+            window.location.href = 'login.html'; 
+        }
+
+        // ====================================================
+        // 2. FUNÇÕES DE CÁLCULO E RENDERIZAÇÃO
+        // ====================================================
+
+        const formatarMoeda = (valor) => `R$ ${valor.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
+
+        const calcularKPIs = (lancamentos) => {
+            let receitaTotal = 0;
+            let despesaTotal = 0;
+            let pendenteReceber = 0;
+            const hoje = new Date();
+
+            lancamentos.forEach(lancamento => {
+                const valor = parseFloat(lancamento.valor);
+                const dataLancamento = new Date(lancamento.data_vencimento || lancamento.data_despesa);
+                
+                if (dataLancamento.getMonth() === hoje.getMonth() && dataLancamento.getFullYear() === hoje.getFullYear()) {
+                    if (lancamento.tipo === 'receita') {
+                        if (lancamento.status === 'Pago') {
+                            receitaTotal += valor;
+                        }
+                        if (lancamento.status === 'Pendente') {
+                            pendenteReceber += valor;
+                        }
+                    } else if (lancamento.tipo === 'despesa') {
+                        despesaTotal += valor;
+                    }
+                }
+            });
+
+            document.getElementById('kpiReceita').textContent = formatarMoeda(receitaTotal);
+            document.getElementById('kpiDespesa').textContent = formatarMoeda(despesaTotal);
+            
+            const liquido = receitaTotal - despesaTotal;
+            const kpiLiquidoElement = document.getElementById('kpiLiquido');
+            const kpiLiquidoContainer = document.getElementById('kpiLiquidoContainer'); // Obtém o container
+            
+            kpiLiquidoElement.textContent = formatarMoeda(liquido);
+            
+            // Atualiza a cor da borda do KPI Líquido (Verde se positivo, Vermelho se negativo)
+            kpiLiquidoContainer.classList.remove('border-green-500', 'border-red-500');
+            kpiLiquidoContainer.classList.add(liquido >= 0 ? 'border-green-500' : 'border-red-500');
+
+            document.getElementById('kpiPendente').textContent = formatarMoeda(pendenteReceber);
+        };
+
+        const renderizarTabela = (lancamentos) => {
+            lancamentosTabela.innerHTML = ''; 
+            
+            if (lancamentos.length === 0) {
+                lancamentosTabela.innerHTML = `<tr><td colspan="5" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">Nenhum lançamento encontrado.</td></tr>`;
+                return;
+            }
+
+            lancamentos.sort((a, b) => new Date(b.data_vencimento || b.data_despesa) - new Date(a.data_vencimento || a.data_despesa));
+            const ultimosLancamentos = lancamentos.slice(0, 10);
+            
+            ultimosLancamentos.forEach(lancamento => {
+                const tipo = lancamento.data_despesa ? 'Despesa' : 'Receita'; 
+                const valor = parseFloat(lancamento.valor);
+                const data = new Date(lancamento.data_vencimento || lancamento.data_despesa).toLocaleDateString('pt-BR');
+                const status = lancamento.status || 'Efetuada';
+                
+                let statusClass = '';
+                let statusTexto = status;
+
+                if (tipo === 'Receita') {
+                    statusClass = (status === 'Pago') ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800';
+                } else {
+                    statusClass = 'bg-red-100 text-red-800'; 
+                    statusTexto = 'Efetuada';
+                }
+
+                const row = `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${tipo}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${lancamento.descricao}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium ${tipo === 'Despesa' ? 'text-red-600' : 'text-green-600'}">
+                            ${formatarMoeda(valor)}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${data}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
+                                ${statusTexto}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+                lancamentosTabela.innerHTML += row;
+            });
+        };
+
+        // ====================================================
+        // 3. FUNÇÃO PRINCIPAL: CARREGAR DADOS DO BACKEND
+        // ====================================================
+        const carregarDados = async () => {
+            lancamentosTabela.innerHTML = `<tr><td colspan="5" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">Carregando dados...</td></tr>`;
+
+            try {
+                const response = await fetch(`${API_URL}/api/lancamentos`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}` 
+                    }
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        alert("Sua sessão expirou. Faça login novamente.");
+                        localStorage.removeItem('freeflow_token');
+                        window.location.href = 'login.html';
+                    }
+                    throw new Error('Falha ao carregar os dados.');
+                }
+
+                const lancamentos = await response.json();
+                
+                const lancamentosAdaptados = lancamentos.map(l => ({
+                    ...l,
+                    tipo: l.data_despesa ? 'despesa' : 'receita',
+                }));
+                
+                calcularKPIs(lancamentosAdaptados);
+                renderizarTabela(lancamentosAdaptados);
+
+            } catch (error) {
+                console.error("Erro ao carregar dados do backend:", error);
+                lancamentosTabela.innerHTML = `<tr><td colspan="5" class="px-6 py-4 whitespace-nowrap text-sm text-red-600 text-center">Erro ao conectar com o servidor ou carregar dados.</td></tr>`;
+            }
+        };
+
+        // ====================================================
+        // 4. LISTENERS DE EVENTOS (incluindo responsividade)
+        // ====================================================
+        
+        // --- Controle do Modal ---
+        function abrirModal() {
+            registroModal.classList.remove('hidden');
+            registroModal.classList.add('flex');
+            tipoSelect.dispatchEvent(new Event('change')); 
+        }
+
+        function fecharModal() {
+            registroModal.classList.add('hidden');
+            registroModal.classList.remove('flex');
+            registroForm.reset(); 
+        }
+
+        abrirModalBtn.addEventListener('click', abrirModal); 
+        abrirModalMobileBtn.addEventListener('click', abrirModal); 
+        fecharModalBtn.addEventListener('click', fecharModal);
+
+        registroModal.addEventListener('click', (e) => {
+            if (e.target.id === 'registroModal') {
+                fecharModal();
+            }
+        });
+
+        // --- Controle da Sidebar (Mobile) ---
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full'); 
+            sidebarOverlay.classList.toggle('hidden');
+        });
+        
+        sidebarOverlay.addEventListener('click', () => {
+            sidebar.classList.add('-translate-x-full');
+            sidebarOverlay.classList.add('hidden');
+        });
+        
+        // --- Lógica do Formulário (Permanece igual) ---
+        tipoSelect.addEventListener('change', () => {
+            if (tipoSelect.value === 'receita') {
+                statusDiv.classList.remove('hidden');
+                parceiroInput.placeholder = 'Ex: Cliente X';
+                document.querySelector('label[for="data"]').textContent = 'Data (Vencimento)'; 
+            } else {
+                statusDiv.classList.add('hidden');
+                parceiroInput.placeholder = 'Ex: Fornecedor Y';
+                document.querySelector('label[for="data"]').textContent = 'Data (Despesa)'; 
+            }
+        });
+
+        registroForm.onsubmit = async (e) => {
+            e.preventDefault();
+            
+            const tipo = tipoSelect.value;
+            const isReceita = tipo === 'receita';
+            
+            const lancamentoData = {
+                descricao: document.getElementById('descricao').value,
+                valor: parseFloat(document.getElementById('valor').value),
+            };
+            
+            let url = '';
+            
+            if (isReceita) {
+                url = `${API_URL}/api/receitas`;
+                lancamentoData.data_vencimento = document.getElementById('data').value;
+                lancamentoData.status = document.getElementById('status').value;
+                lancamentoData.cliente = parceiroInput.value;
+            } else {
+                url = `${API_URL}/api/despesas`; 
+                lancamentoData.data_despesa = document.getElementById('data').value;
+                lancamentoData.fornecedor = parceiroInput.value;
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}` 
+                    },
+                    body: JSON.stringify(lancamentoData)
+                });
+
+                if (response.ok) {
+                    alert(`Lançamento de ${tipo} salvo com sucesso!`);
+                    fecharModal(); 
+                    await carregarDados(); 
+                } else {
+                    const result = await response.json();
+                    alert(`Erro ao salvar: ${result.message || response.statusText}`);
+                }
+            } catch (error) {
+                alert('Erro de conexão com o servidor. Verifique se o Backend está rodando.');
+                console.error('Fetch error:', error);
+            }
+        };
+
+        // --- Logout ---
+        document.getElementById('logoutButton').addEventListener('click', () => {
+            localStorage.removeItem('freeflow_token');
+            window.location.href = 'login.html';
+        });
+
+        // Inicialização: Carrega os dados quando a página estiver pronta
+        document.addEventListener('DOMContentLoaded', carregarDados);
+        document.addEventListener('DOMContentLoaded', () => {
+            tipoSelect.dispatchEvent(new Event('change')); 
+        });
+    </script>
+</body>
+</html>

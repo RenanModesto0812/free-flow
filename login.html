@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - FreeFlow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #f7f9fb; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center">
+
+    <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-2xl border border-gray-100">
+        <h2 class="text-3xl font-bold text-center text-indigo-600 mb-6">FreeFlow Login</h2>
+        <p class="text-center text-gray-500 mb-8">Controle seu faturamento de freelancer em segundos.</p>
+
+        <form id="loginForm" class="space-y-6">
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">E-mail</label>
+                <input type="email" id="email" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="seu.email@exemplo.com">
+            </div>
+
+            <div>
+                <label for="senha" class="block text-sm font-medium text-gray-700">Senha</label>
+                <input type="password" id="senha" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="••••••••">
+            </div>
+
+            <p id="errorMessage" class="text-red-600 text-sm hidden">Credenciais inválidas. Tente novamente.</p>
+
+            <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">
+                Entrar
+            </button>
+        </form>
+
+        <div class="mt-6 text-center">
+            <a href="#" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                Esqueceu a senha?
+            </a>
+            <p class="mt-4 text-sm text-gray-500">
+                Novo por aqui? <a href="cadastro.html" class="font-medium text-indigo-600 hover:text-indigo-500">Crie sua conta.</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+            const errorMessage = document.getElementById('errorMessage');
+            
+            errorMessage.classList.add('hidden'); // Esconde a mensagem de erro
+
+            // 1. Envio dos dados para o Backend
+            try {
+                const response = await fetch('http://localhost:3000/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, senha })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // 2. Login de Sucesso!
+                    // Salva o Token (Crachá Digital) no navegador
+                    localStorage.setItem('freeflow_token', result.token); 
+                    
+                    // 3. Redireciona para o Dashboard
+                    window.location.href = 'index.html'; 
+                } else {
+                    // 4. Login Falhou
+                    errorMessage.textContent = result.message || 'Credenciais inválidas.';
+                    errorMessage.classList.remove('hidden');
+                }
+
+            } catch (error) {
+                errorMessage.textContent = 'Erro de conexão com o servidor. Tente novamente.';
+                errorMessage.classList.remove('hidden');
+                console.error('Erro de rede:', error);
+            }
+        });
+    </script>
+</body>
+</html>
