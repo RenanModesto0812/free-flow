@@ -1,17 +1,31 @@
 {
   "version": 2,
   
+  // 1. O Vercel usará a configuração padrão de static build para a raiz.
   "builds": [
     {
-      "src": "server.js", 
+      "src": "server.js",
       "use": "@vercel/node"
     }
   ],
   
+  // 2. Apenas rotas que comecem com /api vão para o seu Express.
+  // A rota raiz (/) será procurada nos seus arquivos estáticos (index.html, etc.).
   "routes": [
     {
-      "src": "/(.*)", 
-      "dest": "server.js" 
+      "src": "/api/(.*)", // 
+      "dest": "server.js"
+    },
+    // Você pode precisar de uma regra para o login/cadastro se não tiver o prefixo /api
+    {
+      "src": "/cadastro",
+      "dest": "server.js"
+    },
+    {
+      "src": "/login",
+      "dest": "server.js"
     }
+    
+    // NOTA: A rota raiz (/) NÃO está sendo redirecionada para server.js.
   ]
 }
