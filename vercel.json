@@ -1,15 +1,3 @@
 {
-    "version": 2,
-    "builds": [
-        {
-            "src": "./index.html",
-            "use": "@vercel/node"
-        }
-    ],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "use": "/" 
-        }
-    ]
+  "outputDirectory": "build" // Mude 'build' para a pasta correta (ex: 'dist')
 }
