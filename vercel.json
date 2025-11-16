@@ -1,25 +1,15 @@
 {
   "version": 2,
-  
   "builds": [
     {
       "src": "server.js",
       "use": "@vercel/node"
     }
   ],
-  
   "routes": [
     {
-      "src": "/api/(.*)",
+      "src": "/(.*)", // <-- Esta regra captura TUDO, incluindo a rota raiz (/)
       "dest": "server.js"
-    },
-    {
-      "src": "/cadastro",
-      "dest": "server.js"
-    },
-    {
-      "src": "/login",
-      "dest": "server.js"
-    } 
-  ] 
+    }
+  ]
 }
