@@ -6,10 +6,13 @@
             "use": "@vercel/node"
         }
     ],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "use": "/" 
-        }
-    ]
+    {
+  "routes": [
+    {
+      "src": "/api/users",
+      "dest": "/api/users-handler",
+      "use": "@vercel/node" // ❌ ERRO: A propriedade 'use' não é válida aqui!
+    }
+  ]
+}
 }
